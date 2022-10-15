@@ -26,36 +26,3 @@ jobs:
         with:
           python-version: 3.8.12
           architecture: x64
-
-      - name: Install requirements
-        run: |
-          pip install -r requirements.txt
-          pip install -r requirements.dev.txt
-
-      - name: Publish code coverage
-        uses: paambaati/codeclimate-action@v3.0.0
-        with:
-          coverageCommand: pytest
-          coverageLocations: ${{github.workspace}}/coverage.xml:coverage.py
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-          ENV: test
-
-      - name: Upload Coverage results to share between jobs
-        uses: actions/upload-artifact@v2
-        with:
-          name: coverage
-          path: coverage.xml
-
-  upload-to-codecov:
-    needs: [run-test]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Download artifacts
-        uses: actions/download-artifact@v2
-      - name: Upload to Codecov
-        uses: codecov/codecov-action@v1
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
